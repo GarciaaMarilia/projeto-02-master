@@ -1,0 +1,21 @@
+<div class="page-component">
+    <app-title [title]="countryName" />
+
+
+    <div class="content-container">
+        <app-card [title]="'Number of entries'" [content]="numberOfParticipations" />
+
+        <app-card [title]="'Total number medals'" [content]="numberOfMedals" />
+
+        <app-card [title]="'Total number of athletes'" [content]="numberOfAthletes" />
+
+    </div>
+    <div class="graph-container">
+        <canvas id="medalsChart" width="600" height="400"></canvas>
+    </div>
+
+    <button (click)="goBack()">
+        Go Back
+    </button>
+
+</div>

@@ -1,3 +1,16 @@
-<h2>Olympic games app</h2>
-<hr />
-<p>{{ (olympics$ | async)?.length }} data loaded</p>
+<div class="page-component">
+    <app-title [title]="'Medals per country'" />
+    <div class="content-container">
+        <app-card [title]="'Number of JOs'" [content]="numberOfJos">
+        </app-card>
+
+        <app-card [title]="'Number of countries'" [content]="numberOfCountries">
+        </app-card>
+    </div>
+
+    <div class="pie-component">
+        <canvas baseChart [data]="pieChartData" [type]="pieChartType" (chartClick)="onChartClick($event)">
+        </canvas>
+    </div>
+
+</div>

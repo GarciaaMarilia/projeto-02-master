@@ -1,0 +1,30 @@
+.page-component {
+  padding: 24px;
+  align-items: center;
+  justify-items: center;
+  flex-direction: column;
+}
+
+.content-container {
+  gap: 40px;
+  display: flex;
+  margin-bottom: 30px;
+  justify-content: space-between;
+}
+
+.graph-component {
+  display: block;
+  padding: 20px;
+}
+
+button {
+  border: none;
+  color: white;
+  font-size: 20px;
+  margin-top: 10px;
+  font-weight: bold;
+  border-radius: 5px;
+  padding-block: 10px;
+  padding-inline: 20px;
+  background-color: #04838f;
+}
