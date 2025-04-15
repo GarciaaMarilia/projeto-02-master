@@ -59,28 +59,16 @@ export class HomeComponent implements OnInit {
     this.olympics$ = this.olympicService.getOlympics();
     this.olympics$.subscribe((data) => {
       if (data) {
-        const labels = data.map((country: OlympicCountry) => country.country);
-        const jos = new Set();
-
-        data.map((country: OlympicCountry) =>
-          country.participations.map((participation: Participation) => {
-            jos.add(participation.year);
-          })
-        );
+        const labels = this.getLabels(data);
+        const jos = this.getParticipations(data);
 
         this.numberOfJos = Array.from(jos).length;
         this.numberOfCountries = labels.length;
 
-        const ids = data.map((country: OlympicCountry) => country.id);
+        const ids = this.getIds(data);
         this.countryIds = ids;
 
-        const medals = data.map((country: OlympicCountry) => {
-          return country.participations.reduce(
-            (sum: number, participation: Participation) =>
-              sum + participation.medalsCount,
-            0
-          );
-        });
+        const medals = this.getMedals(data);
 
         this.pieChartData = {
           labels: labels,
@@ -93,5 +81,39 @@ export class HomeComponent implements OnInit {
         };
       }
     });
+  }
+
+  getLabels(data: OlympicCountry[]) {
+    const labels = data.map((country: OlympicCountry) => country.country);
+    return labels;
+  }
+
+  getParticipations(data: OlympicCountry[]) {
+    const jos = new Set();
+
+    data.map((country: OlympicCountry) =>
+      country.participations.map((participation: Participation) => {
+        jos.add(participation.year);
+      })
+    );
+
+    return jos;
+  }
+
+  getIds(data: OlympicCountry[]) {
+    const ids = data.map((country: OlympicCountry) => country.id);
+    return ids;
+  }
+
+  getMedals(data: OlympicCountry[]) {
+    const medals = data.map((country: OlympicCountry) => {
+      return country.participations.reduce(
+        (sum: number, participation: Participation) =>
+          sum + participation.medalsCount,
+        0
+      );
+    });
+
+    return medals;
   }
 }

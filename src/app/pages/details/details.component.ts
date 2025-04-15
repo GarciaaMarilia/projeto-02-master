@@ -46,47 +46,23 @@ export class DetailsComponent implements OnInit {
         const country = data.find(
           (country: OlympicCountry) => country.id === this.countryId
         );
+
         this.countryName = country?.country ?? '';
         const participations = country?.participations ?? [];
 
         this.numberOfParticipations = participations.length;
 
-        this.numberOfMedals = participations.reduce(
-          (acc: number, participationList: Participation) => {
-            return acc + participationList.medalsCount;
-          },
-          0
-        );
+        this.numberOfMedals = this.getNumberOfMedals(participations);
 
-        this.numberOfAthletes = participations.reduce(
-          (acc: number, participationList: Participation) => {
-            return acc + participationList.athleteCount;
-          },
-          0
-        );
+        this.numberOfAthletes = this.getNumberOfAthletes(participations);
 
-        const labels = participations.map(
-          (participation: Participation) => participation.year
-        );
-        const graphData = participations.map(
-          (participation: Participation) => participation.medalsCount
-        );
+        const labels = this.getLabels(participations);
+
+        const graphData = this.getGraphData(participations);
 
         new Chart('medalsChart', {
           type: 'line',
-          data: {
-            labels: labels,
-            datasets: [
-              {
-                label: 'Number of medals',
-                data: graphData,
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                fill: false,
-                tension: 0.1,
-              },
-            ],
-          },
+          data: this.getDataChart(labels, graphData),
           options: {
             responsive: true,
             scales: {
@@ -98,5 +74,51 @@ export class DetailsComponent implements OnInit {
         });
       }
     });
+  }
+
+  getNumberOfMedals(participations: Participation[]) {
+    return participations.reduce(
+      (acc: number, participationList: Participation) => {
+        return acc + participationList.medalsCount;
+      },
+      0
+    );
+  }
+
+  getNumberOfAthletes(participations: Participation[]) {
+    return participations.reduce(
+      (acc: number, participationList: Participation) => {
+        return acc + participationList.athleteCount;
+      },
+      0
+    );
+  }
+
+  getLabels(participations: Participation[]) {
+    return participations.map(
+      (participation: Participation) => participation.year
+    );
+  }
+
+  getGraphData(participations: Participation[]) {
+    return participations.map(
+      (participation: Participation) => participation.medalsCount
+    );
+  }
+
+  getDataChart(labels: Number[], graphData: Number[]) {
+    return {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Number of medals',
+          data: graphData,
+          borderColor: 'rgba(75, 192, 192, 1)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          fill: false,
+          tension: 0.1,
+        },
+      ],
+    };
   }
 }
