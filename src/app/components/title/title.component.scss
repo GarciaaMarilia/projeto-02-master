@@ -1,8 +1,15 @@
 .title-component {
   border: 1px;
   color: white;
+  text-align: center;
   border-radius: 8px;
   margin-bottom: 60px;
   padding-inline: 20px;
   background-color: #04838f;
+}
+
+@media (max-width: 768px) {
+  .title-component {
+    font-size: 14px;
+  }
 }
