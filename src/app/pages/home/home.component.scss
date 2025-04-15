@@ -1,18 +1,49 @@
 .page-component {
+  display: flex;
   padding: 24px;
   align-items: center;
-  justify-items: center;
+  justify-content: center;
   flex-direction: column;
 }
 
 .content-container {
+  gap: 20px;
+  width: 100%;
   display: flex;
-  gap: 40px;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .pie-component {
   display: block;
-  width: 400px;
+  min-width: 400px;
+  max-width: 90%;
   margin-top: 40px;
+}
+
+@media (max-width: 768px) {
+  .content-container {
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .pie-component {
+    min-width: 300px;
+    max-width: 100%;
+  }
+
+  .page-component {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .content-container {
+    gap: 10px;
+  }
+
+  .pie-component {
+    min-width: 300px;
+  }
 }

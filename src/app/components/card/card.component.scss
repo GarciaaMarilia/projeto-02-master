@@ -1,17 +1,50 @@
 .content-component {
-  min-width: 200px;
+  width: 100%;
+  max-width: 100%;
   font-size: 18px;
   border-radius: 8px;
   text-align: center;
   padding-inline: 20px;
+  box-sizing: border-box;
   border: 3px solid #04838f;
 }
 
 .title-container {
   color: #6b6b6b;
+  align-items: center;
+  justify-content: center;
 }
 
 .content {
   font-size: 20px;
   font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .content-component {
+    max-width: 100%;
+    padding-inline: 15px;
+  }
+
+  .title-container {
+    font-size: 16px;
+  }
+
+  .content {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .content-component {
+    padding-inline: 10px;
+  }
+
+  .title-container {
+    font-size: 14px;
+  }
+
+  .content {
+    font-size: 16px;
+  }
 }
