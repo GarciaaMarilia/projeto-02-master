@@ -15,8 +15,7 @@
 }
 
 .graph-container {
-  width: 100%;
-  max-width: 90vw;
+  width: 500px;
   overflow-x: auto;
   display: flex;
   justify-content: center;
@@ -40,6 +39,11 @@ button {
     flex-direction: column;
     align-items: center;
     gap: 20px;
+  }
+
+  .graph-container {
+    width: 100%;
+    max-width: 90vw;
   }
 
   button {
