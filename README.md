@@ -1,29 +1,90 @@
 # OlympicGamesStarter
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.3.
+Cette application permet d'afficher des informations sur les pays participants aux Jeux Olympiques, ainsi que des graphiques relatifs à leurs performances. Elle est composée de deux pages principales : la page d'accueil et la page de détails d'un pays.
 
-Don't forget to install your node_modules before starting (`npm install`).
+## Fonctionnalités
 
-## Development server
+1. Page d'Accueil : Affiche un graphique circulaire avec le nombre de médailles gagnées par pays. En cliquant sur un secteur du graphique, l'utilisateur est redirigé vers la page de détails du pays correspondant.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+2. Page de Détails : Affiche des informations détaillées sur un pays, y compris le nombre de médailles, d'athlètes, et de participations aux différents Jeux Olympiques. Un graphique linéaire montre le nombre de médailles remportées par le pays au fil des années.
 
-## Build
+## Prérequis
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Assurez-vous d'avoir les éléments suivants installés sur votre machine :
 
-## Where to start
+1. Node.js (version 16 ou supérieure)
 
-As you can see, an architecture has already been defined for the project. It is just a suggestion, you can choose to use your own. The predefined architecture includes (in addition to the default angular architecture) the following:
+2. NPM (Node Package Manager)
 
-- `components` folder: contains every reusable components
-- `pages` folder: contains components used for routing
-- `core` folder: contains the business logic (`services` and `models` folders)
+## Installation
 
-I suggest you to start by understanding this starter code. Pay an extra attention to the `app-routing.module.ts` and the `olympic.service.ts`.
+1. Clonez ce repository
 
-Once mastered, you should continue by creating the typescript interfaces inside the `models` folder. As you can see I already created two files corresponding to the data included inside the `olympic.json`. With your interfaces, improve the code by replacing every `any` by the corresponding interface.
+```
+git clone https://github.com/GarciaaMarilia/projeto-02-master.git
+```
 
-You're now ready to implement the requested features.
+2. Naviguez dans le répertoire du projet :
 
-Good luck!
+```
+cd projeto-02-master
+```
+
+3. Installez les dépendances :
+
+```
+npm install
+```
+
+## Lancé l'application
+
+Pour lancer l'application en mode développement, exécutez :
+
+```
+ng serve
+```
+Cela ouvrira l'application dans votre navigateur à l'adresse http://localhost:4200.
+
+## Structure du projet
+
+# Page d'Accueil (home.component.ts)
+
+La page d'accueil affiche un graphique circulaire des médailles des pays. Lorsqu'un utilisateur clique sur un secteur du graphique, il est redirigé vers la page de détails de ce pays. Le graphique est généré à l'aide de ng2-charts et chart.js.
+
+# Composants utilisés :
+
+- CardComponent : Affiche des cartes d'information.
+
+- TitleComponent : Affiche le titre de la page.
+
+- BaseChartDirective : Utilisé pour le graphique.
+
+# Page de Détails (details.component.ts)
+
+La page de détails affiche des informations détaillées sur un pays spécifique, y compris le nombre total de médailles, d'athlètes, et de participations aux Jeux Olympiques. Un graphique linéaire montre l'évolution des médailles gagnées au fil des années.
+
+# Composants utilisés :
+
+- CardComponent : Affiche des cartes d'information.
+
+- TitleComponent : Affiche le titre de la page.
+
+# Service OlympicService
+
+Le service OlympicService récupère les données des pays et des participations depuis une source locale.
+
+# Dépendances
+
+**chart.js** et **ng2-charts** sont utilisés pour la génération des graphiques.
+
+**rxjs** est utilisé pour gérer les observables.
+
+**@angular/core**, **@angular/router** et d'autres modules Angular pour la gestion des routes et des composants.
+
+# Fichiers principaux
+
+**home.component.ts** : Composant pour la page d'accueil.
+
+**details.component.ts** : Composant pour la page de détails.
+
+**olympic.service.ts** : Service pour récupérer les données des pays et participations.
