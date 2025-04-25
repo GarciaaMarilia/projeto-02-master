@@ -1,16 +1,16 @@
 import { Router } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 import { Observable, of } from 'rxjs';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartData, ChartType } from 'chart.js';
 
+import { graphColors } from 'src/utils/colors';
 import { OlympicCountry } from 'src/app/core/models/Olympic';
 import { Participation } from 'src/app/core/models/Participation';
 import { CardComponent } from 'src/app/components/card/card.component';
 import { OlympicService } from 'src/app/core/services/olympic.service';
 import { TitleComponent } from 'src/app/components/title/title.component';
-import { graphColors } from 'src/utils/colors';
 
 @Component({
   selector: 'app-home',
@@ -19,7 +19,7 @@ import { graphColors } from 'src/utils/colors';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   public olympics$: Observable<any> = of(null);
 
   public pieChartData: ChartData<'pie', number[], string | string[]> = {
@@ -31,6 +31,8 @@ export class HomeComponent implements OnInit {
       },
     ],
   };
+
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
 
   constructor(private router: Router, private olympicService: OlympicService) {}
 
@@ -81,6 +83,17 @@ export class HomeComponent implements OnInit {
         };
       }
     });
+
+    if (this.chart?.chart) {
+      this.chart.chart.destroy();
+    }
+    this.chart?.update();
+  }
+
+  ngOnDestroy() {
+    if (this.chart?.chart) {
+      this.chart.chart.destroy();
+    }
   }
 
   getLabels(data: OlympicCountry[]) {

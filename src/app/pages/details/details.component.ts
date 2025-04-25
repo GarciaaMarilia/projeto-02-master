@@ -1,9 +1,10 @@
 import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 import { Chart } from 'chart.js';
 import { Observable, of } from 'rxjs';
+import { BaseChartDirective } from 'ng2-charts';
 
 import { OlympicCountry } from 'src/app/core/models/Olympic';
 import { Participation } from 'src/app/core/models/Participation';
@@ -14,11 +15,11 @@ import { TitleComponent } from 'src/app/components/title/title.component';
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [TitleComponent, CardComponent],
+  imports: [TitleComponent, CardComponent, BaseChartDirective],
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],
 })
-export class DetailsComponent implements OnInit {
+export class DetailsComponent implements OnInit, OnDestroy {
   public olympics$: Observable<OlympicCountry[]> = of([]);
 
   countryId!: number;
@@ -26,6 +27,8 @@ export class DetailsComponent implements OnInit {
   numberOfMedals!: number;
   numberOfAthletes!: number;
   numberOfParticipations!: number;
+
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
 
   constructor(
     private route: ActivatedRoute,
@@ -74,6 +77,17 @@ export class DetailsComponent implements OnInit {
         });
       }
     });
+
+    if (this.chart?.chart) {
+      this.chart.chart.destroy();
+    }
+    this.chart?.update();
+  }
+
+  ngOnDestroy() {
+    if (this.chart?.chart) {
+      this.chart.chart.destroy();
+    }
   }
 
   getNumberOfMedals(participations: Participation[]) {
