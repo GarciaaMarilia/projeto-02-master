@@ -1,9 +1,10 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
 import { BehaviorSubject, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { OlympicCountry } from '../models/Olympic';
 
+import { OlympicCountry } from '../models/Olympic';
 @Injectable({
   providedIn: 'root',
 })
@@ -16,7 +17,7 @@ export class OlympicService {
   loadInitialData() {
     return this.http.get<OlympicCountry[]>(this.olympicUrl).pipe(
       tap((value) => this.olympics$.next(value)),
-      catchError((error, caught) => {
+      catchError((error) => {
         console.error('Error to get data', error);
         this.olympics$.next([]);
         return of(null);

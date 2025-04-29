@@ -1,10 +1,10 @@
-import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { CommonModule, Location } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 import { Chart } from 'chart.js';
-import { Observable, of } from 'rxjs';
 import { BaseChartDirective } from 'ng2-charts';
+import { Observable, of, Subject, takeUntil } from 'rxjs';
 
 import { OlympicCountry } from 'src/app/core/models/Olympic';
 import { Participation } from 'src/app/core/models/Participation';
@@ -15,7 +15,7 @@ import { TitleComponent } from 'src/app/components/title/title.component';
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [TitleComponent, CardComponent, BaseChartDirective],
+  imports: [CommonModule, TitleComponent, CardComponent, BaseChartDirective],
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],
 })
@@ -29,6 +29,8 @@ export class DetailsComponent implements OnInit, OnDestroy {
   numberOfParticipations!: number;
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
+  private chartInstance: Chart | undefined;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
@@ -44,7 +46,8 @@ export class DetailsComponent implements OnInit, OnDestroy {
     this.countryId = Number(this.route.snapshot.paramMap.get('id'));
     this.olympics$ = this.olympicService.getOlympics();
 
-    this.olympics$.subscribe((data) => {
+    /* J’utilise subscribe() ici pour traiter les données, sinon l’async pipe (HTML) aurait été préférable */
+    this.olympics$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
       if (data) {
         const country = data.find(
           (country: OlympicCountry) => country.id === this.countryId
@@ -63,7 +66,11 @@ export class DetailsComponent implements OnInit, OnDestroy {
 
         const graphData = this.getGraphData(participations);
 
-        new Chart('medalsChart', {
+        if (this.chartInstance) {
+          this.chartInstance.destroy();
+        }
+
+        this.chartInstance = new Chart('medalsChart', {
           type: 'line',
           data: this.getDataChart(labels, graphData),
           options: {
@@ -77,16 +84,13 @@ export class DetailsComponent implements OnInit, OnDestroy {
         });
       }
     });
-
-    if (this.chart?.chart) {
-      this.chart.chart.destroy();
-    }
-    this.chart?.update();
   }
 
   ngOnDestroy() {
-    if (this.chart?.chart) {
-      this.chart.chart.destroy();
+    this.destroy$.next();
+    this.destroy$.complete();
+    if (this.chartInstance) {
+      this.chartInstance.destroy();
     }
   }
 
@@ -120,7 +124,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
     );
   }
 
-  getDataChart(labels: Number[], graphData: Number[]) {
+  getDataChart(labels: Array<string | number>, graphData: number[]) {
     return {
       labels: labels,
       datasets: [
