@@ -84,14 +84,8 @@ export class HomeComponent implements OnInit, OnDestroy {
             },
           ],
         };
-        this.chart?.update();
       }
     });
-
-    if (this.chart?.chart) {
-      this.chart.chart.destroy();
-    }
-    this.chart?.update();
   }
 
   ngOnDestroy() {

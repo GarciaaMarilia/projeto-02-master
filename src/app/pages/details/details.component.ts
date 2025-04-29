@@ -1,5 +1,5 @@
-import { Location } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { CommonModule, Location } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 import { Chart } from 'chart.js';
@@ -15,7 +15,7 @@ import { TitleComponent } from 'src/app/components/title/title.component';
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [TitleComponent, CardComponent, BaseChartDirective],
+  imports: [CommonModule, TitleComponent, CardComponent, BaseChartDirective],
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.scss'],
 })
@@ -29,6 +29,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
   numberOfParticipations!: number;
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
+  private chartInstance: Chart | undefined;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -65,7 +66,11 @@ export class DetailsComponent implements OnInit, OnDestroy {
 
         const graphData = this.getGraphData(participations);
 
-        new Chart('medalsChart', {
+        if (this.chartInstance) {
+          this.chartInstance.destroy();
+        }
+
+        this.chartInstance = new Chart('medalsChart', {
           type: 'line',
           data: this.getDataChart(labels, graphData),
           options: {
@@ -77,20 +82,15 @@ export class DetailsComponent implements OnInit, OnDestroy {
             },
           },
         });
-
-        this.chart?.update();
       }
     });
-
-    if (this.chart?.chart) {
-      this.chart.chart.destroy();
-    }
-    this.chart?.update();
   }
 
   ngOnDestroy() {
-    if (this.chart?.chart) {
-      this.chart.chart.destroy();
+    this.destroy$.next();
+    this.destroy$.complete();
+    if (this.chartInstance) {
+      this.chartInstance.destroy();
     }
   }
 
@@ -124,7 +124,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
     );
   }
 
-  getDataChart(labels: Number[], graphData: Number[]) {
+  getDataChart(labels: Array<string | number>, graphData: number[]) {
     return {
       labels: labels,
       datasets: [
