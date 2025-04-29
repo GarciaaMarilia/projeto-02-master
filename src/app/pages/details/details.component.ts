@@ -3,8 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 import { Chart } from 'chart.js';
-import { Observable, of } from 'rxjs';
 import { BaseChartDirective } from 'ng2-charts';
+import { Observable, of, Subject, takeUntil } from 'rxjs';
 
 import { OlympicCountry } from 'src/app/core/models/Olympic';
 import { Participation } from 'src/app/core/models/Participation';
@@ -29,6 +29,7 @@ export class DetailsComponent implements OnInit, OnDestroy {
   numberOfParticipations!: number;
 
   @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
@@ -44,7 +45,8 @@ export class DetailsComponent implements OnInit, OnDestroy {
     this.countryId = Number(this.route.snapshot.paramMap.get('id'));
     this.olympics$ = this.olympicService.getOlympics();
 
-    this.olympics$.subscribe((data) => {
+    /* J’utilise subscribe() ici pour traiter les données, sinon l’async pipe (HTML) aurait été préférable */
+    this.olympics$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
       if (data) {
         const country = data.find(
           (country: OlympicCountry) => country.id === this.countryId
@@ -75,6 +77,8 @@ export class DetailsComponent implements OnInit, OnDestroy {
             },
           },
         });
+
+        this.chart?.update();
       }
     });
 

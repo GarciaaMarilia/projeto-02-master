@@ -1,7 +1,7 @@
 import { Router } from '@angular/router';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject, takeUntil } from 'rxjs';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartData, ChartType } from 'chart.js';
 
@@ -20,7 +20,7 @@ import { TitleComponent } from 'src/app/components/title/title.component';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  public olympics$: Observable<any> = of(null);
+  public olympics$: Observable<OlympicCountry[] | null> = of(null);
 
   public pieChartData: ChartData<'pie', number[], string | string[]> = {
     labels: [],
@@ -41,6 +41,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   numberOfCountries: number = 0;
 
   public pieChartType: ChartType = 'pie';
+  private destroy$ = new Subject<void>();
 
   onChartClick(event: any): void {
     const activePoints = event.active;
@@ -57,9 +58,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  /* J’utilise subscribe() ici pour traiter les données, sinon l’async pipe aurait été préférable */
   ngOnInit(): void {
     this.olympics$ = this.olympicService.getOlympics();
-    this.olympics$.subscribe((data) => {
+
+    this.olympics$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
       if (data) {
         const labels = this.getLabels(data);
         const jos = this.getParticipations(data);
@@ -81,6 +84,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             },
           ],
         };
+        this.chart?.update();
       }
     });
 
